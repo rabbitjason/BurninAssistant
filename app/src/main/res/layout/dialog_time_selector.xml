@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/llTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Title"
+            android:textSize="18dp"
+            android:textStyle="bold"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/dividerLine"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/llTimeSelector"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTitle"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/llHour"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <NumberPicker
+                android:id="@+id/hourPicker"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="时" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llMinute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <NumberPicker
+                android:id="@+id/minutePicker"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="分" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llTimeSelector"
+        android:layout_centerHorizontal="true">
+        <Button
+            android:id="@+id/btnOk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="确定"/>
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="取消"/>
+    </LinearLayout>
+</RelativeLayout>
