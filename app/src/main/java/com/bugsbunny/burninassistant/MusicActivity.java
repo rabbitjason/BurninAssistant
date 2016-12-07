@@ -8,6 +8,7 @@ import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,7 @@ import com.bugsbunny.burninassistant.bean.MusicBean;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private static final int ADD_MUSIC = 1;
 
     private List<MusicBean> musicList = new ArrayList<MusicBean>();
+    MusicAdapter musicAdapter;
     private ListView lvMusic;
     private TextView tvAdd;
 
@@ -48,6 +51,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     private void initView() {
         lvMusic = (ListView) findViewById(R.id.lvMusic);
+        musicAdapter = new MusicAdapter(MusicActivity.this,
+                R.layout.music_list_item, musicList);
+        lvMusic.setAdapter(musicAdapter);
 
         tvAdd = (TextView) findViewById(R.id.tvAdd);
         tvAdd.setOnClickListener(this);
@@ -78,6 +84,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 music.setUrl(path);
                 getMP3MetaData(music);
                 musicList.add(music);
+                musicAdapter.notifyDataSetChanged();
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -140,7 +147,31 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            return super.getView(position, convertView, parent);
+            MusicBean music = getItem(position);
+            View view;
+            ViewHolder viewHolder;
+            if (null == convertView) {
+                view = LayoutInflater.from(getContext()).inflate(resourceId, null);
+                viewHolder = new ViewHolder();
+                viewHolder.name = (TextView) view.findViewById(R.id.tvName);
+                viewHolder.detail = (TextView) view.findViewById(R.id.tvDetail);
+                view.setTag(viewHolder);
+            } else {
+                view = convertView;
+                viewHolder = (ViewHolder) view.getTag();
+            }
+
+            viewHolder.name.setText(music.getName());
+            SimpleDateFormat formatter = new SimpleDateFormat("mm:ss");//初始化Formatter的转换格式。
+            String hms = formatter.format(music.getLength());
+            viewHolder.detail.setText(hms + " " + music.getArtist()+" - " +music.getAlbum());
+
+            return view;
+        }
+
+        class ViewHolder {
+            TextView name;
+            TextView detail;
         }
     }
 }
