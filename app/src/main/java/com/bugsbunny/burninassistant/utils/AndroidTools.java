@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.TimeZone;
 
 /**
  * Created by Administrator on 2015/12/4.
@@ -858,5 +859,10 @@ public class AndroidTools {
         return fileSizeString;
     }
 
-
+    public static String getTimeDescription(long ms) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH 小时 mm 分钟");
+        formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
+        String hms = formatter.format(ms);
+        return hms;
+    }
 }

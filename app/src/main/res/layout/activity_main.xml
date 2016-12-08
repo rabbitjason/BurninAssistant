@@ -9,7 +9,8 @@
     <WebView
         android:id="@+id/webView"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="50dp"
+        android:visibility="gone">
     </WebView>
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,7 +37,7 @@
                 android:textSize="20sp"
                 android:textColor="@color/textColor"
                 android:textStyle="bold"
-                android:text="煲机时长"/>
+                android:text="设置时长"/>
             <LinearLayout
                 android:id="@+id/llDuration"
                 android:layout_width="wrap_content"
@@ -75,7 +76,8 @@
             android:layout_height="40dp"
             android:layout_marginTop="10dp"
             android:background="@color/white"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
             <View
                 android:layout_width="5dp"
                 android:layout_height="30dp"
@@ -110,6 +112,7 @@
                     android:text="分" />
             </LinearLayout>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -133,7 +136,7 @@
                     android:textSize="20sp"
                     android:textColor="@color/textColor"
                     android:textStyle="bold"
-                    android:text="煲机曲目"/>
+                    android:text="选择曲目"/>
 
                 <LinearLayout
                     android:id="@+id/llMusicMore"
@@ -159,34 +162,56 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
                 android:background="@color/dividerLine"/>
+
             <ListView
                 android:id="@+id/lvMusic"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:divider="#ffdddddd"
-                android:dividerHeight="0.5dp" />
+                android:dividerHeight="0.5dp"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/llCountdownTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
             <TextView
-                android:id="@+id/tvStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="煲机中..."/>
+                android:layout_marginLeft="10dp"
+                android:text="总煲机时长："/>
+
             <TextView
-                android:id="@+id/tvCountdownTime"
+                android:id="@+id/tvTotalTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="00:00:00"
-                android:textSize="45sp"/>
+                android:layout_marginLeft="10dp"
+                android:text=""/>
 
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="上次煲机时长："/>
+
+            <TextView
+                android:id="@+id/tvLastTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""/>
+
+        </LinearLayout>
+
     </LinearLayout>
 
     <LinearLayout
@@ -195,6 +220,27 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
+        <LinearLayout
+            android:id="@+id/llCountdownTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:orientation="vertical"
+            android:gravity="center">
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""/>
+            <TextView
+                android:id="@+id/tvCountdownTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textSize="45sp"/>
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/tvMusicName"
             android:layout_width="wrap_content"
@@ -235,15 +281,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="开始"
-                android:layout_centerInParent="true"/>
+                android:text="开始"/>
             <Button
                 android:id="@+id/btnReset"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="重置"
-                android:layout_centerInParent="true"/>
+                android:text="重置"/>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

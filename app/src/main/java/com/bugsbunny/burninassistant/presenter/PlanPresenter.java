@@ -23,6 +23,10 @@ public class PlanPresenter {
         planModel = new PlanModel();
     }
 
+    public boolean isPlay() {
+        return isPlay;
+    }
+
     public void load() {
        planBean = planModel.load();
         if (planBean != null) {
@@ -83,6 +87,7 @@ public class PlanPresenter {
     }
 
     public void stopCountdown() {
+        isPlay = false;
         planView.showStatus("");
         handler.removeCallbacks(runnable);
     }

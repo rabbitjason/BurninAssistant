@@ -13,15 +13,17 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bugsbunny.burninassistant.bean.PlanBean;
+import com.bugsbunny.burninassistant.manager.PreferenceManager;
 import com.bugsbunny.burninassistant.model.PlanModel;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
+import com.bugsbunny.burninassistant.utils.AndroidTools;
 import com.bugsbunny.burninassistant.view.IPlanView;
 
 public class MainActivity extends BaseActivity implements IPlanView, View.OnClickListener {
     private View llDuration, llInterval, llMusicMore;
     private WebView myWebView;
     private TextView tvDurationHour,tvDurationMinute,tvIntervalMinute;
-    private TextView tvStatus,tvCountdownTime;
+    private TextView tvStatus,tvCountdownTime, tvTotalTime, tvLastTime;
     private PlanPresenter planPresenter;
     private Button btnPlay, btnReset;
 
@@ -30,9 +32,9 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         planPresenter = new PlanPresenter(this);
-        initWebView();
         initView();
         planPresenter.load();
+        bindData();
     }
 
     private void initView() {
@@ -41,6 +43,9 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         tvIntervalMinute = (TextView)findViewById(R.id.tvIntervalMinute);
         tvStatus = (TextView)findViewById(R.id.tvStatus);
         tvCountdownTime = (TextView)findViewById(R.id.tvCountdownTime);
+
+        tvTotalTime = (TextView) findViewById(R.id.tvTotalTime);
+        tvLastTime = (TextView) findViewById(R.id.tvLastTime);
 
         llDuration = findViewById(R.id.llDuration);
         llDuration.setOnClickListener(this);
@@ -56,6 +61,14 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
 
         btnReset = (Button)findViewById(R.id.btnReset);
         btnReset.setOnClickListener(this);
+    }
+
+    private void bindData() {
+        long lastTime = PreferenceManager.getLastTime();
+        tvLastTime.setText(AndroidTools.getTimeDescription(lastTime));
+
+        long totalTime = PreferenceManager.getTotalTime();
+        tvTotalTime.setText(AndroidTools.getTimeDescription(totalTime));
     }
 
     private void initWebView() {
@@ -112,7 +125,15 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 TimeSelectorDialog.actionStart(this, "间隔周期", 0, minute, TimeSelectorDialog.REQUEST_INTERVAL);
                 break;
             case R.id.btnPlay:
-                planPresenter.startCountdown();
+                if (planPresenter.isPlay()) {
+                    planPresenter.stopCountdown();
+                    btnPlay.setText("开始");
+                    btnReset.setEnabled(true);
+                } else {
+                    planPresenter.startCountdown();
+                    btnPlay.setText("停止");
+                    btnReset.setEnabled(false);
+                }
                 break;
             case R.id.btnReset:
                 planPresenter.stopCountdown();

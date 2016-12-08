@@ -7,6 +7,7 @@ import java.util.List;
  * Created by Administrator on 2015/12/10.
  */
 public class PlanBean {
+
     private long duration;
     private long intervalTime;
     private long remainingTime;
