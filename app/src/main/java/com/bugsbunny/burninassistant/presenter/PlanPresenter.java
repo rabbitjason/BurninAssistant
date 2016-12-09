@@ -3,6 +3,7 @@ package com.bugsbunny.burninassistant.presenter;
 import android.os.Handler;
 
 import com.bugsbunny.burninassistant.bean.PlanBean;
+import com.bugsbunny.burninassistant.manager.PreferenceManager;
 import com.bugsbunny.burninassistant.model.IPlanModel;
 import com.bugsbunny.burninassistant.model.PlanModel;
 import com.bugsbunny.burninassistant.view.IPlanView;
@@ -81,12 +82,13 @@ public class PlanPresenter {
 
     public void startCountdown() {
         planView.showStatus("煲机中...");
-        remainTime = planBean.getDuration();
+        remainTime = planBean.getRemainingTime();
         isPlay = true;
         handler.postDelayed(runnable, 1000);
     }
 
     public void stopCountdown() {
+        planBean.setRemainingTime(remainTime);
         isPlay = false;
         planView.showStatus("");
         handler.removeCallbacks(runnable);

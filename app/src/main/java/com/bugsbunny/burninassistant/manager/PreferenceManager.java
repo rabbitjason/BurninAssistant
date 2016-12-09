@@ -19,6 +19,10 @@ public class PreferenceManager {
     static String TOTAL_TIME = "totalTime";
     static String LAST_TIME = "lastTime";
 
+    public static final long HH_MS = 60 * 60 * 1000;
+    public static final long MM_MS = 60 * 1000;
+    public static final long SS_MS = 1 * 1000;
+
 
     private static SharedPreferences getSharedPreferences() {
         if (sharedPreferences == null)
@@ -36,7 +40,7 @@ public class PreferenceManager {
 
     public static long getDuration() {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getLong(DURATION_KEY, 0);
+        return sharedPreferences.getLong(DURATION_KEY, 4 * HH_MS);
     }
 
     public static void saveIntervalTime(long intervalTime) {
@@ -47,7 +51,7 @@ public class PreferenceManager {
 
     public static long getIntervalTime() {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getLong(INTERVAL_TIME, 0);
+        return sharedPreferences.getLong(INTERVAL_TIME, 15 * MM_MS);
     }
 
     public static void saveRemainingTime(long remainingTime) {
@@ -58,7 +62,7 @@ public class PreferenceManager {
 
     public static long getRemainingTime() {
         SharedPreferences sharedPreferences = getSharedPreferences();
-        return sharedPreferences.getLong(REMAINING_TIME, 0);
+        return sharedPreferences.getLong(REMAINING_TIME, 4 * HH_MS);
     }
 
     public static void saveTotalTime(long totalTime) {
