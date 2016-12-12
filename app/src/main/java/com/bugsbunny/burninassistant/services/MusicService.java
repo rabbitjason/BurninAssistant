@@ -3,6 +3,8 @@ package com.bugsbunny.burninassistant.services;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -54,6 +56,7 @@ public class MusicService extends Service {
                 playerPrepared = true;
                 if (playing) {
                     mediaPlayer.start();
+                    mediaPlayer.setLooping(true);
                 }
             }
         });
@@ -62,6 +65,7 @@ public class MusicService extends Service {
             @Override
             public void onCompletion(MediaPlayer mp) {
 //                playNext();
+
             }
         });
     }
@@ -90,7 +94,14 @@ public class MusicService extends Service {
         try {
             playerPrepared = false;
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(music.getUrl());
+            if (music.getIsAssetType()) {
+                AssetManager am = getAssets();
+                AssetFileDescriptor fileDescriptor = am.openFd(music.getUrl());
+                mediaPlayer.setDataSource(fileDescriptor.getFileDescriptor(),
+                        fileDescriptor.getStartOffset(), fileDescriptor.getLength());
+            } else {
+                mediaPlayer.setDataSource(music.getUrl());
+            }
             mediaPlayer.prepareAsync();
             //handler.sendEmptyMessage(0);
         } catch (IllegalArgumentException e) {
@@ -143,7 +154,7 @@ public class MusicService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new MusicBinder();
     }
 
     public class MusicBinder extends Binder {
@@ -151,7 +162,7 @@ public class MusicService extends Service {
          * 获取当前Service的实例
          * @return
          */
-        public MusicService getService(){
+        public MusicService getService() {
             return MusicService.this;
         }
     }

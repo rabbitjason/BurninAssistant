@@ -1,8 +1,13 @@
 package com.bugsbunny.burninassistant;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.net.http.SslError;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -10,12 +15,14 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bugsbunny.burninassistant.bean.PlanBean;
 import com.bugsbunny.burninassistant.manager.PreferenceManager;
 import com.bugsbunny.burninassistant.model.PlanModel;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
+import com.bugsbunny.burninassistant.services.MusicService;
 import com.bugsbunny.burninassistant.utils.AndroidTools;
 import com.bugsbunny.burninassistant.view.IPlanView;
 
@@ -23,9 +30,28 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     private View llDuration, llInterval, llMusicMore;
     private WebView myWebView;
     private TextView tvDurationHour,tvDurationMinute,tvIntervalMinute;
-    private TextView tvStatus,tvCountdownTime, tvTotalTime, tvLastTime;
+    private TextView tvStatus, tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName;
     private PlanPresenter planPresenter;
     private Button btnPlay, btnReset;
+
+    private int maxVolume, currentVolume;
+    private SeekBar sbVolume;
+    private AudioManager audioManager;
+
+    private MusicService musicService;
+    ServiceConnection conn = new ServiceConnection() {
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+
+            musicService = ((MusicService.MusicBinder)service).getService();
+            planPresenter.setMusicService(musicService);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +59,40 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         setContentView(R.layout.activity_main);
         planPresenter = new PlanPresenter(this);
         initView();
+        initVolumeSeekBar();
         planPresenter.load();
         bindData();
+
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, conn, Context.BIND_AUTO_CREATE);
+    }
+
+    private void initVolumeSeekBar() {
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        sbVolume = (SeekBar) findViewById(R.id.sbVolume);
+        sbVolume.setMax(maxVolume);
+        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        sbVolume.setProgress(currentVolume);
+        sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
+                currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                //seekBar.setProgress(currentVolume);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     private void initView() {
@@ -61,6 +119,8 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
 
         btnReset = (Button)findViewById(R.id.btnReset);
         btnReset.setOnClickListener(this);
+
+        tvMusicName = (TextView) findViewById(R.id.tvMusicName);
     }
 
     private void bindData() {
@@ -110,6 +170,11 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     }
 
     @Override
+    public void showMusicName(String name) {
+        tvMusicName.setText(name);
+    }
+
+    @Override
     public void onClick(View v) {
         Intent intent;
         int hour;
@@ -147,7 +212,22 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
+
+        unbindService(conn);
+
         super.onDestroy();
     }
 

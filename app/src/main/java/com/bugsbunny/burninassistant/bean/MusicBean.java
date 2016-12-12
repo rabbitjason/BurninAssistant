@@ -13,14 +13,23 @@ public class MusicBean {
     private static final String URL = "url";
     private static final String LENGTH = "length";
     private static final String IS_ASSET_TYPE = "isAssetType";
+    private static final String SELECTED = "selected";
 
     private String name;
     private String url;
     private String artist;
     private String album;
     private long length;
-
+    private boolean selected = false;
     private boolean isAssetType = false;
+
+    public boolean getSelected() {
+        return this.selected;
+    }
+
+    public void setSelected(boolean is) {
+        this.selected = is;
+    }
 
     public boolean getIsAssetType() {
         return  isAssetType;
@@ -80,6 +89,7 @@ public class MusicBean {
             jsonMusic.put(URL, url);
             jsonMusic.put(LENGTH, length);
             jsonMusic.put(IS_ASSET_TYPE, isAssetType);
+            jsonMusic.put(SELECTED, selected);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -113,6 +123,9 @@ public class MusicBean {
             }
             if (json.has(IS_ASSET_TYPE)) {
                 music.setIsAssetType(json.getBoolean(IS_ASSET_TYPE));
+            }
+            if (json.has(SELECTED)) {
+                music.setSelected(json.getBoolean(SELECTED));
             }
 
         } catch (JSONException e) {

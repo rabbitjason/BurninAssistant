@@ -2,10 +2,12 @@ package com.bugsbunny.burninassistant.presenter;
 
 import android.os.Handler;
 
+import com.bugsbunny.burninassistant.bean.MusicBean;
 import com.bugsbunny.burninassistant.bean.PlanBean;
 import com.bugsbunny.burninassistant.manager.PreferenceManager;
 import com.bugsbunny.burninassistant.model.IPlanModel;
 import com.bugsbunny.burninassistant.model.PlanModel;
+import com.bugsbunny.burninassistant.services.MusicService;
 import com.bugsbunny.burninassistant.view.IPlanView;
 
 /**
@@ -19,6 +21,8 @@ public class PlanPresenter {
     private PlanBean planBean;
     private boolean isPlay = false;
 
+    private MusicService musicService;
+
     public PlanPresenter(IPlanView planView) {
         this.planView = planView;
         planModel = new PlanModel();
@@ -26,6 +30,11 @@ public class PlanPresenter {
 
     public boolean isPlay() {
         return isPlay;
+    }
+
+    public void setMusicService(MusicService ms) {
+        this.musicService = ms;
+        ms.setMusic(planBean.getSelectedMusic());
     }
 
     public void load() {
@@ -37,7 +46,13 @@ public class PlanPresenter {
 
             minute = (int)(planBean.getIntervalTime() / PlanModel.MM_MS);
             planView.showIntervalTime(minute);
+
+            MusicBean ms = planBean.getSelectedMusic();
+            if (ms != null) {
+                planView.showMusicName(ms.getName());
+            }
         }
+
     }
 
     public void save() {
@@ -85,6 +100,9 @@ public class PlanPresenter {
         remainTime = planBean.getRemainingTime();
         isPlay = true;
         handler.postDelayed(runnable, 1000);
+        if (musicService != null) {
+            musicService.playOrPause();
+        }
     }
 
     public void stopCountdown() {
@@ -92,5 +110,8 @@ public class PlanPresenter {
         isPlay = false;
         planView.showStatus("");
         handler.removeCallbacks(runnable);
+        if (musicService != null) {
+            musicService.playOrPause();
+        }
     }
 }

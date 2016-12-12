@@ -1,5 +1,6 @@
 package com.bugsbunny.burninassistant.bean;
 
+import java.net.MulticastSocket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class PlanBean {
     private long duration;
     private long intervalTime;
     private long remainingTime;
-    private List<MusicBean> musicList = new ArrayList<MusicBean>();
+    private List<MusicBean> musicList;
 
     public long getDuration() {
         return duration;
@@ -43,5 +44,15 @@ public class PlanBean {
 
     public void setMusicList(List<MusicBean> musicList) {
         this.musicList = musicList;
+    }
+
+    public MusicBean getSelectedMusic() {
+
+        for (MusicBean m : musicList) {
+            if (m.getSelected()) {
+                return m;
+            }
+        }
+        return null;
     }
 }

@@ -248,7 +248,7 @@
             android:text="music name"
             android:layout_gravity="center_horizontal"/>
         <SeekBar
-            android:id="@+id/seekBarProgress"
+            android:id="@+id/sbVolume"
             android:layout_width="match_parent"
             android:layout_height="35dp" />
         <LinearLayout

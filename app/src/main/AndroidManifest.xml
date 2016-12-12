@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.bugsbunny.burninassistant">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
     <application
         android:name=".ApplicationBurnin"
         android:allowBackup="true"
@@ -21,8 +25,14 @@
 
         <activity android:name=".MusicActivity"/>
 
+        <service
+            android:name=".services.MusicService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
     </application>
 
-    <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>

@@ -39,6 +39,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private TextView tvAdd;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

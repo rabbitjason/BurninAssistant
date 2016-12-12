@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.media.ExifInterface;
+import android.media.MediaMetadataRetriever;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Environment;
@@ -29,6 +31,8 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.bugsbunny.burninassistant.bean.MusicBean;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -864,5 +868,58 @@ public class AndroidTools {
         formatter.setTimeZone(TimeZone.getTimeZone("GMT+00:00"));
         String hms = formatter.format(ms);
         return hms;
+    }
+
+    public static void getMP3MetaData(Context context, MusicBean music)
+    {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            if (music.getIsAssetType()) {
+
+                try {
+                    AssetFileDescriptor afd = context.getAssets().openFd(music.getUrl());
+                    retriever.setDataSource(afd.getFileDescriptor(),
+                            afd.getStartOffset(), afd.getLength());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                retriever.setDataSource(music.getUrl());
+            }
+
+            //时长
+            String duration = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+            if (duration != null) {
+                music.setLength(Long.parseLong(duration));
+            }
+
+            //艺术家
+            String artist = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+            if (artist != null) {
+                music.setArtist(artist);
+            }
+
+            //标题
+            String title = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+            if (title != null) {
+                music.setName(title);
+            }
+
+            //专辑
+            String album = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM);
+            if (album != null) {
+                music.setAlbum(album);
+            }
+
+            String author = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_AUTHOR);
+
+
+        }catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
+
     }
 }

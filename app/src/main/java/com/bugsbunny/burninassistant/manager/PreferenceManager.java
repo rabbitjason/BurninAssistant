@@ -4,6 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.bugsbunny.burninassistant.ApplicationBurnin;
+import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.utils.AndroidTools;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lipple-server on 16/12/8.
@@ -13,11 +20,12 @@ public class PreferenceManager {
 
     static SharedPreferences sharedPreferences;
 
-    static String DURATION_KEY = "duration";
-    static String INTERVAL_TIME = "intervalTime";
-    static String REMAINING_TIME = "remainingTime";
-    static String TOTAL_TIME = "totalTime";
-    static String LAST_TIME = "lastTime";
+    static final String DURATION_KEY = "duration";
+    static final String INTERVAL_TIME = "intervalTime";
+    static final String REMAINING_TIME = "remainingTime";
+    static final String TOTAL_TIME = "totalTime";
+    static final String LAST_TIME = "lastTime";
+    static final String BURNIN_MUSICS = "burningMusics";
 
     public static final long HH_MS = 60 * 60 * 1000;
     public static final long MM_MS = 60 * 1000;
@@ -47,6 +55,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(INTERVAL_TIME, intervalTime);
+        editor.commit();
     }
 
     public static long getIntervalTime() {
@@ -58,6 +67,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(REMAINING_TIME, remainingTime);
+        editor.commit();
     }
 
     public static long getRemainingTime() {
@@ -80,10 +90,53 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(LAST_TIME, lastTime);
+        editor.commit();
     }
 
     public static long getLastTime() {
         SharedPreferences sharedPreferences = getSharedPreferences();
         return sharedPreferences.getLong(LAST_TIME, 0);
+    }
+
+    public static List<MusicBean> getMusics() {
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        Set<String> jsonSet = sharedPreferences.getStringSet(BURNIN_MUSICS, null);
+        List<MusicBean> musicList = new ArrayList<MusicBean>();
+        if (jsonSet != null) {
+            for (String json : jsonSet) {
+                MusicBean m = MusicBean.objectFromJSONString(json);
+                musicList.add(m);
+            }
+        } else {
+            MusicBean musicWhite = new MusicBean();
+            musicWhite.setName("白噪音");
+            musicWhite.setAlbum("煲机助手");
+            musicWhite.setUrl("white.mp3");
+            musicWhite.setIsAssetType(true);
+            musicWhite.setSelected(false);
+            AndroidTools.getMP3MetaData(ApplicationBurnin.getInstance(), musicWhite);
+            musicList.add(musicWhite);
+
+            MusicBean musicRed = new MusicBean();
+            musicRed.setName("粉红噪音");
+            musicRed.setAlbum("煲机助手");
+            musicRed.setUrl("red.mp3");
+            musicRed.setIsAssetType(true);
+            musicRed.setSelected(true);
+            AndroidTools.getMP3MetaData(ApplicationBurnin.getInstance(), musicRed);
+            musicList.add(musicRed);
+        }
+        return musicList;
+    }
+
+    public static void saveMusics(List<MusicBean> mbs) {
+        SharedPreferences sharedPreferences = getSharedPreferences();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Set<String> jsonSet = new HashSet<String>();
+        for (MusicBean m : mbs) {
+            jsonSet.add(m.toJSONString());
+        }
+        editor.putStringSet(BURNIN_MUSICS, jsonSet);
+        editor.commit();
     }
 }

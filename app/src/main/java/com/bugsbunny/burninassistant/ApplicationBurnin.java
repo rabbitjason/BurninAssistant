@@ -2,6 +2,9 @@ package com.bugsbunny.burninassistant;
 
 import android.app.Application;
 
+import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.services.MusicService;
+
 /**
  * Created by Administrator on 2015/12/10.
  */
@@ -15,6 +18,8 @@ public class ApplicationBurnin extends Application {
         super.onCreate();
 
         instance = ApplicationBurnin.this;
+
+        MusicService.init(this);
     }
 
     public static ApplicationBurnin getInstance() {
