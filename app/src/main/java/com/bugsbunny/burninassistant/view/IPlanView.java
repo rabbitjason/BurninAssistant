@@ -14,4 +14,6 @@ public interface IPlanView {
     public void showCountdownTime(int hour, int minute, int second);
     public void showStatus(String status);
     public void showMusicName(String name);
+    public void showTotalTime(long tm);
+    public void showLastTime(long tm);
 }

@@ -13,17 +13,22 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.manager.PreferenceManager;
 
 import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -33,12 +38,12 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     private static final int ADD_MUSIC = 1;
 
-    private List<MusicBean> musicList = new ArrayList<MusicBean>();
+    private List<MusicBean> musicList;// = new ArrayList<MusicBean>();
     MusicAdapter musicAdapter;
     private ListView lvMusic;
     private TextView tvAdd;
-
-
+    //用于记录每个RadioButton的状态，并保证只可选一个
+    HashMap<String, Boolean> states = new HashMap<String, Boolean>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,32 +60,22 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     }
 
     private void initView() {
-        lvMusic = (ListView) findViewById(R.id.lvMusic);
-        musicAdapter = new MusicAdapter(MusicActivity.this,
-                R.layout.music_list_item, musicList);
-        lvMusic.setAdapter(musicAdapter);
-
         tvAdd = (TextView) findViewById(R.id.tvAdd);
         tvAdd.setOnClickListener(this);
     }
 
     private void initMusicList() {
-        MusicBean musicWhite = new MusicBean();
-        musicWhite.setName("白噪音");
-        musicWhite.setAlbum("煲机助手");
-        musicWhite.setUrl("coicoi.wav");
-        musicWhite.setIsAssetType(true);
-        getMP3MetaData(musicWhite);
-        musicList.add(musicWhite);
-
-        MusicBean musicRed = new MusicBean();
-        musicRed.setName("粉红噪音");
-        musicRed.setAlbum("煲机助手");
-        musicRed.setUrl("beep.wav");
-        musicRed.setIsAssetType(true);
-        getMP3MetaData(musicRed);
-        musicList.add(musicRed);
-
+        musicList = PreferenceManager.getMusics();
+        lvMusic = (ListView) findViewById(R.id.lvMusic);
+        musicAdapter = new MusicAdapter(MusicActivity.this,
+                R.layout.music_list_item, musicList);
+        lvMusic.setAdapter(musicAdapter);
+        lvMusic.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                musicAdapter.select(position);
+            }
+        });
     }
 
     @Override
@@ -97,6 +92,14 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     }
 
     @Override
+    protected void onDestroy() {
+
+        PreferenceManager.saveMusics(musicList);
+
+        super.onDestroy();
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (RESULT_OK == resultCode) {
@@ -108,6 +111,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 getMP3MetaData(music);
                 musicList.add(music);
                 musicAdapter.notifyDataSetChanged();
+
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -207,8 +211,22 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             resourceId = resource;
         }
 
+        // 选中当前选项时，让其他选项不被选中
+        public void select(int position) {
+            MusicBean music = getItem(position);
+            if (!music.getSelected()) {
+                music.setSelected(true);
+                for (int i = 0; i < getCount(); i++) {
+                    if (i != position) {
+                        getItem(i).setSelected(false);
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        }
+
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             MusicBean music = getItem(position);
             View view;
             ViewHolder viewHolder;
@@ -217,6 +235,14 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 viewHolder = new ViewHolder();
                 viewHolder.name = (TextView) view.findViewById(R.id.tvName);
                 viewHolder.detail = (TextView) view.findViewById(R.id.tvDetail);
+                viewHolder.btnSelected = (RadioButton) view.findViewById(R.id.btnSelected);
+                viewHolder.btnSelected.setClickable(false);
+                viewHolder.ivDelete = (ImageView) view.findViewById(R.id.ivDelete);
+                if ( 0 == position ) {
+                    viewHolder.ivDelete.setVisibility(View.GONE);
+                } else if ( 1 == position ) {
+                    viewHolder.ivDelete.setVisibility(View.GONE);
+                }
                 view.setTag(viewHolder);
             } else {
                 view = convertView;
@@ -234,8 +260,15 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
             } else if (music.getAlbum() != null) {
                 detail = music.getAlbum();
             }
-
             viewHolder.detail.setText(hms + " " + detail);
+            viewHolder.btnSelected.setChecked(music.getSelected());
+            viewHolder.ivDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    remove(getItem(position));
+                    notifyDataSetChanged();
+                }
+            });
 
             return view;
         }
@@ -243,6 +276,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         class ViewHolder {
             TextView name;
             TextView detail;
+            RadioButton btnSelected;
+            ImageView ivDelete;
         }
     }
 }

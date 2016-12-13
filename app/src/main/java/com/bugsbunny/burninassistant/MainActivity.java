@@ -61,7 +61,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         initView();
         initVolumeSeekBar();
         planPresenter.load();
-        bindData();
 
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
@@ -80,7 +79,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
                 currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-                //seekBar.setProgress(currentVolume);
             }
 
             @Override
@@ -123,13 +121,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         tvMusicName = (TextView) findViewById(R.id.tvMusicName);
     }
 
-    private void bindData() {
-        long lastTime = PreferenceManager.getLastTime();
-        tvLastTime.setText(AndroidTools.getTimeDescription(lastTime));
-
-        long totalTime = PreferenceManager.getTotalTime();
-        tvTotalTime.setText(AndroidTools.getTimeDescription(totalTime));
-    }
 
     private void initWebView() {
         myWebView = (WebView) findViewById(R.id.webView);
@@ -175,6 +166,16 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     }
 
     @Override
+    public void showTotalTime(long ms) {
+        tvTotalTime.setText(AndroidTools.getTimeDescription(ms));
+    }
+
+    @Override
+    public void showLastTime(long tm) {
+        tvLastTime.setText(AndroidTools.getTimeDescription(tm));
+    }
+
+    @Override
     public void onClick(View v) {
         Intent intent;
         int hour;
@@ -201,7 +202,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 }
                 break;
             case R.id.btnReset:
-                planPresenter.stopCountdown();
+                //planPresenter.stopCountdown();
                 break;
             case R.id.llMusicMore:
                 MusicActivity.actionStart(this);
@@ -226,6 +227,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     @Override
     protected void onDestroy() {
 
+        planPresenter.save();
         unbindService(conn);
 
         super.onDestroy();

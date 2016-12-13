@@ -51,6 +51,8 @@ public class PlanPresenter {
             if (ms != null) {
                 planView.showMusicName(ms.getName());
             }
+
+            planView.showLastTime(planBean.getLastTime());
         }
 
     }
@@ -75,6 +77,14 @@ public class PlanPresenter {
         public void run() {
             if (remainTime > 0) {
                 remainTime -= PlanModel.SS_MS;
+                long total = planBean.getTotalTime();
+                planBean.setTotalTime(total + PlanModel.SS_MS);
+                planView.showTotalTime(planBean.getTotalTime());
+
+                int hour = (int)(remainTime / PlanModel.HH_MS);
+                int minute = (int)((remainTime / PlanModel.SS_MS) - hour * 3600) / 60;
+                int second = (int)(remainTime / PlanModel.SS_MS - hour * 3600 - minute * 60);
+                planView.showCountdownTime(hour, minute, second);
             } else {
                 if (isPlay) {
                     planView.showStatus("休息中...");
@@ -87,10 +97,7 @@ public class PlanPresenter {
                 }
 
             }
-            int hour = (int)(remainTime / PlanModel.HH_MS);
-            int minute = (int)((remainTime / PlanModel.SS_MS) - hour * 3600) / 60;
-            int second = (int)(remainTime / PlanModel.SS_MS - hour * 3600 - minute * 60);
-            planView.showCountdownTime(hour, minute, second);
+
             handler.postDelayed(this, 1000);
         }
     };

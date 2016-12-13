@@ -10,20 +10,21 @@
         android:background="@color/danceRed"
         android:visibility="visible"/>
 
-    <CheckBox
-        android:id="@+id/ckbSelect"
+    <RadioButton
+        android:id="@+id/btnSelected"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="10dp"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:focusable="false" />
 
     <LinearLayout
         android:id="@+id/llDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/ckbSelect"
+        android:layout_toRightOf="@+id/btnSelected"
         android:orientation="vertical">
         <TextView
             android:id="@+id/tvName"
@@ -45,7 +46,7 @@
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/ivExpand"
+        android:id="@+id/ivDelete"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_margin="10dp"

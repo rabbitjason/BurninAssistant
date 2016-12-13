@@ -12,7 +12,25 @@ public class PlanBean {
     private long duration;
     private long intervalTime;
     private long remainingTime;
+    private long totalTime;
+    private long lastTime;
     private List<MusicBean> musicList;
+
+    public long getTotalTime() {
+        return totalTime;
+    }
+
+    public void setTotalTime(long totalTime) {
+        this.totalTime = totalTime;
+    }
+
+    public long getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(long lastTime) {
+        this.lastTime = lastTime;
+    }
 
     public long getDuration() {
         return duration;

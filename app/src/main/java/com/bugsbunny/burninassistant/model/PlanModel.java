@@ -62,7 +62,9 @@ public class PlanModel implements IPlanModel {
         planBean.setRemainingTime(PreferenceManager.getRemainingTime());
         planBean.setMusicList(PreferenceManager.getMusics());
 
+        planBean.setTotalTime(PreferenceManager.getTotalTime());
 
+        planBean.setLastTime(PreferenceManager.getLastTime());
 
 //        SharedPreferences accessPref =
 //                ApplicationBurnin.getInstance().getSharedPreferences(PLAN_PREF, Context.MODE_PRIVATE);
@@ -108,6 +110,8 @@ public class PlanModel implements IPlanModel {
         PreferenceManager.saveRemainingTime(planBean.getRemainingTime());
         PreferenceManager.saveIntervalTime(planBean.getIntervalTime());
         PreferenceManager.saveMusics(planBean.getMusicList());
+        PreferenceManager.saveTotalTime(planBean.getTotalTime());
+        PreferenceManager.saveLastTime(planBean.getLastTime());
     }
 
 
