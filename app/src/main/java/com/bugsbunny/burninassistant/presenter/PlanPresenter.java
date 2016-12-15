@@ -49,7 +49,7 @@ public class PlanPresenter {
 
             MusicBean ms = planBean.getSelectedMusic();
             if (ms != null) {
-                planView.showMusicName(ms.getName());
+                planView.showMusic(ms);
             }
 
             planView.showLastTime(planBean.getLastTime());

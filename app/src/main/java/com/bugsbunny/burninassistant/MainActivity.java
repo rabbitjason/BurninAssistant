@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.bugsbunny.burninassistant.bean.MusicBean;
 import com.bugsbunny.burninassistant.bean.PlanBean;
 import com.bugsbunny.burninassistant.manager.PreferenceManager;
 import com.bugsbunny.burninassistant.model.PlanModel;
@@ -26,17 +27,17 @@ import com.bugsbunny.burninassistant.services.MusicService;
 import com.bugsbunny.burninassistant.utils.AndroidTools;
 import com.bugsbunny.burninassistant.view.IPlanView;
 
+import java.text.SimpleDateFormat;
+
 public class MainActivity extends BaseActivity implements IPlanView, View.OnClickListener {
     private View llDuration, llInterval, llMusicMore;
     private WebView myWebView;
     private TextView tvDurationHour,tvDurationMinute,tvIntervalMinute;
-    private TextView tvStatus, tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName;
+    private TextView tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName, tvMusicDetail;
     private PlanPresenter planPresenter;
-    private Button btnPlay, btnReset;
+    private Button btnPlay;
 
-    private int maxVolume, currentVolume;
-    private SeekBar sbVolume;
-    private AudioManager audioManager;
+    private static final int SELECTED_MUSIC_RC = 100;
 
     private MusicService musicService;
     ServiceConnection conn = new ServiceConnection() {
@@ -59,45 +60,19 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         setContentView(R.layout.activity_main);
         planPresenter = new PlanPresenter(this);
         initView();
-        initVolumeSeekBar();
         planPresenter.load();
 
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
     }
 
-    private void initVolumeSeekBar() {
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        sbVolume = (SeekBar) findViewById(R.id.sbVolume);
-        sbVolume.setMax(maxVolume);
-        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        sbVolume.setProgress(currentVolume);
-        sbVolume.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                audioManager.setStreamVolume(AudioManager.STREAM_SYSTEM, progress, 0);
-                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, progress, 0);
-                currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-    }
 
     private void initView() {
         tvDurationHour = (TextView)findViewById(R.id.tvDurationHour);
         tvDurationMinute = (TextView)findViewById(R.id.tvDurationMinute);
         tvIntervalMinute = (TextView)findViewById(R.id.tvIntervalMinute);
-        tvStatus = (TextView)findViewById(R.id.tvStatus);
+
         tvCountdownTime = (TextView)findViewById(R.id.tvCountdownTime);
 
         tvTotalTime = (TextView) findViewById(R.id.tvTotalTime);
@@ -115,10 +90,8 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         btnPlay = (Button)findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
 
-        btnReset = (Button)findViewById(R.id.btnReset);
-        btnReset.setOnClickListener(this);
-
         tvMusicName = (TextView) findViewById(R.id.tvMusicName);
+        tvMusicDetail = (TextView) findViewById(R.id.tvMusicDetail);
     }
 
 
@@ -157,12 +130,23 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
 
     @Override
     public void showStatus(String status) {
-        tvStatus.setText(status);
+
     }
 
     @Override
-    public void showMusicName(String name) {
-        tvMusicName.setText(name);
+    public void showMusic(MusicBean mb) {
+        tvMusicName.setText(mb.getName());
+        SimpleDateFormat formatter = new SimpleDateFormat("mm:ss");//初始化Formatter的转换格式。
+        String hms = formatter.format(mb.getLength());
+        String detail = "";
+        if (mb.getArtist() != null && mb.getAlbum() != null) {
+            detail += mb.getArtist() + " - " + mb.getAlbum();
+        } else if (mb.getArtist() != null) {
+            detail = mb.getArtist();
+        } else if (mb.getAlbum() != null) {
+            detail = mb.getAlbum();
+        }
+        tvMusicDetail.setText(hms + " " + detail);
     }
 
     @Override
@@ -194,18 +178,13 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 if (planPresenter.isPlay()) {
                     planPresenter.stopCountdown();
                     btnPlay.setText("开始");
-                    btnReset.setEnabled(true);
                 } else {
                     planPresenter.startCountdown();
                     btnPlay.setText("停止");
-                    btnReset.setEnabled(false);
                 }
                 break;
-            case R.id.btnReset:
-                //planPresenter.stopCountdown();
-                break;
             case R.id.llMusicMore:
-                MusicActivity.actionStart(this);
+                MusicActivity.actionStart(this, SELECTED_MUSIC_RC);
                 break;
             default:
                 break;
@@ -250,6 +229,10 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                     planPresenter.setIntervalTime(minute);
                 }
             }
+        } else if (SELECTED_MUSIC_RC == requestCode) {
+
+            showMusic(MusicActivity.stMusic);
+
         }
 
         super.onActivityResult(requestCode, resultCode, data);

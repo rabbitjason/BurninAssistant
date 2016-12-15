@@ -113,12 +113,17 @@
             </LinearLayout>
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@color/white"
             android:orientation="vertical">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/dividerLine"/>
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp">
@@ -158,18 +163,34 @@
                         android:scaleType="centerInside"/>
                 </LinearLayout>
             </RelativeLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_centerVertical="true"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/tvMusicName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:gravity="center_vertical"
+                    android:text="music name"
+                    android:textSize="18sp"
+                    android:textColor="#222222"/>
+                <TextView
+                    android:id="@+id/tvMusicDetail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:gravity="center_vertical"
+                    android:singleLine="true"
+                    android:text="03:00 artist - album"
+                    android:textSize="15sp"
+                    android:textColor="#666666"/>
+            </LinearLayout>
             <View
                 android:layout_width="match_parent"
-                android:layout_height="0.5dp"
+                android:layout_height="1dp"
                 android:background="@color/dividerLine"/>
-
-            <ListView
-                android:id="@+id/lvMusic"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:divider="#ffdddddd"
-                android:dividerHeight="0.5dp"
-                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -214,80 +235,15 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llMusicPlayBar"
+    <Button
+        android:id="@+id/btnPlay"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_alignParentBottom="true">
-        <LinearLayout
-            android:id="@+id/llCountdownTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:orientation="vertical"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/tvStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""/>
-            <TextView
-                android:id="@+id/tvCountdownTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00:00"
-                android:textSize="45sp"/>
+        android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:text="开始"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="@drawable/round_button_shape"/>
 
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/tvMusicName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="music name"
-            android:layout_gravity="center_horizontal"/>
-        <SeekBar
-            android:id="@+id/sbVolume"
-            android:layout_width="match_parent"
-            android:layout_height="35dp" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <TextView
-                android:id="@+id/tvPosition"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="00:00"/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-            <TextView
-                android:id="@+id/tvDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="00:00"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <Button
-                android:id="@+id/btnPlay"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="开始"/>
-            <Button
-                android:id="@+id/btnReset"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="重置"/>
-        </LinearLayout>
-    </LinearLayout>
 </RelativeLayout>

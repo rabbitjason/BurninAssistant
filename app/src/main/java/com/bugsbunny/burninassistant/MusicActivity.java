@@ -42,9 +42,8 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     MusicAdapter musicAdapter;
     private ListView lvMusic;
     private TextView tvAdd;
-    //用于记录每个RadioButton的状态，并保证只可选一个
-    HashMap<String, Boolean> states = new HashMap<String, Boolean>();
 
+    public static MusicBean stMusic;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +56,11 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     public static void actionStart(Context context) {
         Intent intent = new Intent(context, MusicActivity.class);
         context.startActivity(intent);
+    }
+
+    public static void actionStart(Context context, int requestCode) {
+        Intent intent = new Intent(context, MusicActivity.class);
+        ((Activity)context).startActivityForResult(intent, requestCode);
     }
 
     private void initView() {
@@ -214,6 +218,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         // 选中当前选项时，让其他选项不被选中
         public void select(int position) {
             MusicBean music = getItem(position);
+            stMusic = music;
             if (!music.getSelected()) {
                 music.setSelected(true);
                 for (int i = 0; i < getCount(); i++) {
