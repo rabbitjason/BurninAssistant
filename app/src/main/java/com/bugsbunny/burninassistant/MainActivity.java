@@ -31,7 +31,6 @@ import java.text.SimpleDateFormat;
 
 public class MainActivity extends BaseActivity implements IPlanView, View.OnClickListener {
     private View llDuration, llInterval, llMusicMore;
-    private WebView myWebView;
     private TextView tvDurationHour,tvDurationMinute,tvIntervalMinute;
     private TextView tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName, tvMusicDetail;
     private PlanPresenter planPresenter;
@@ -66,8 +65,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
     }
 
-
-
     private void initView() {
         tvDurationHour = (TextView)findViewById(R.id.tvDurationHour);
         tvDurationMinute = (TextView)findViewById(R.id.tvDurationMinute);
@@ -95,22 +92,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     }
 
 
-    private void initWebView() {
-        myWebView = (WebView) findViewById(R.id.webView);
-        //myWebView.loadUrl("https://ipcrs.pbccrc.org.cn/");// 百度链接
-        myWebView.loadUrl("http://baidu.com");
-        myWebView.requestFocusFromTouch();
-        // JavaScript使能(如果要加载的页面中有JS代码，则必须使能JS)
-        WebSettings webSettings = myWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
-        webSettings.setUseWideViewPort(true);//设置此属性，可任意比例缩放
-        webSettings.setLoadWithOverviewMode(true);
-        webSettings.setBuiltInZoomControls(true);
-        webSettings.setSupportZoom(true);
-        // 更强的打开链接控制：自己覆写一个WebViewClient类：除了指定链接从WebView打开，其他的链接默认打开
-        myWebView.setWebViewClient(new MyWebViewClient());
-    }
-
     @Override
     public void showDuration(int hour, int minute) {
         tvDurationHour.setText(String.format("%02d", hour));
@@ -126,11 +107,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     public void showCountdownTime(int hour, int minute, int second) {
         tvCountdownTime.setText(String.format("%02d:", hour)
                 + String.format("%02d:", minute) + String.format("%02d", second));
-    }
-
-    @Override
-    public void showStatus(String status) {
-
     }
 
     @Override
@@ -175,13 +151,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 TimeSelectorDialog.actionStart(this, "间隔周期", 0, minute, TimeSelectorDialog.REQUEST_INTERVAL);
                 break;
             case R.id.btnPlay:
-                if (planPresenter.isPlay()) {
-                    planPresenter.stopCountdown();
-                    btnPlay.setText("开始");
-                } else {
-                    planPresenter.startCountdown();
-                    btnPlay.setText("停止");
-                }
+                PlanActivity.actionStart(this, planPresenter);
                 break;
             case R.id.llMusicMore:
                 MusicActivity.actionStart(this, SELECTED_MUSIC_RC);
@@ -230,9 +200,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 }
             }
         } else if (SELECTED_MUSIC_RC == requestCode) {
-
             showMusic(MusicActivity.stMusic);
-
         }
 
         super.onActivityResult(requestCode, resultCode, data);

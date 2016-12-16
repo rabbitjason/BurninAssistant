@@ -23,6 +23,17 @@ public class PlanPresenter {
 
     private MusicService musicService;
 
+    private OnCountDownListener onCountDownListener;
+
+    public interface OnCountDownListener {
+        void onCountDown(long ms);
+    }
+
+    public void setOnCountDownListener(
+            OnCountDownListener onCountDownListener) {
+        this.onCountDownListener = onCountDownListener;
+    }
+
     public PlanPresenter(IPlanView planView) {
         this.planView = planView;
         planModel = new PlanModel();
@@ -53,6 +64,7 @@ public class PlanPresenter {
             }
 
             planView.showLastTime(planBean.getLastTime());
+            planView.showTotalTime(planBean.getTotalTime());
         }
 
     }
@@ -79,23 +91,23 @@ public class PlanPresenter {
                 remainTime -= PlanModel.SS_MS;
                 long total = planBean.getTotalTime();
                 planBean.setTotalTime(total + PlanModel.SS_MS);
-                planView.showTotalTime(planBean.getTotalTime());
+                //planView.showTotalTime(planBean.getTotalTime());
 
                 int hour = (int)(remainTime / PlanModel.HH_MS);
                 int minute = (int)((remainTime / PlanModel.SS_MS) - hour * 3600) / 60;
                 int second = (int)(remainTime / PlanModel.SS_MS - hour * 3600 - minute * 60);
-                planView.showCountdownTime(hour, minute, second);
+                //planView.showCountdownTime(hour, minute, second);
+                if (onCountDownListener != null) {
+                    onCountDownListener.onCountDown(remainTime);
+                }
             } else {
                 if (isPlay) {
-                    planView.showStatus("休息中...");
                     isPlay = false;
                     remainTime = planBean.getIntervalTime();
                 } else {
-                    planView.showStatus("煲机中...");
                     remainTime = planBean.getDuration();
                     isPlay = true;
                 }
-
             }
 
             handler.postDelayed(this, 1000);
@@ -103,7 +115,6 @@ public class PlanPresenter {
     };
 
     public void startCountdown() {
-        planView.showStatus("煲机中...");
         remainTime = planBean.getRemainingTime();
         isPlay = true;
         handler.postDelayed(runnable, 1000);
@@ -114,8 +125,7 @@ public class PlanPresenter {
 
     public void stopCountdown() {
         planBean.setRemainingTime(remainTime);
-        isPlay = false;
-        planView.showStatus("");
+        isPlay = false;;
         handler.removeCallbacks(runnable);
         if (musicService != null) {
             musicService.playOrPause();
