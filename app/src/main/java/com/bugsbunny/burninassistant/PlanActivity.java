@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.bugsbunny.burninassistant.model.PlanModel;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
 
-public class PlanActivity extends AppCompatActivity implements View.OnClickListener {
+public class PlanActivity extends BaseActivity implements View.OnClickListener {
 
     private int maxVolume, currentVolume;
     private SeekBar sbVolume;

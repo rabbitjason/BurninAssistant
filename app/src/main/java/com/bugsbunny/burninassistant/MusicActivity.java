@@ -80,6 +80,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 musicAdapter.select(position);
             }
         });
+
     }
 
     @Override
@@ -97,9 +98,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void onDestroy() {
-
         PreferenceManager.saveMusics(musicList);
-
         super.onDestroy();
     }
 
@@ -218,7 +217,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
         // 选中当前选项时，让其他选项不被选中
         public void select(int position) {
             MusicBean music = getItem(position);
-            stMusic = music;
+//            stMusic = music;
             if (!music.getSelected()) {
                 music.setSelected(true);
                 for (int i = 0; i < getCount(); i++) {
@@ -274,6 +273,10 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                     notifyDataSetChanged();
                 }
             });
+
+            if (music.getSelected()) {
+                stMusic = music;
+            }
 
             return view;
         }

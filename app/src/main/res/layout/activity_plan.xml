@@ -35,7 +35,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
             android:background="@color/white"
             android:orientation="horizontal">
@@ -53,34 +52,41 @@
                 android:textColor="@color/textColor"/>
         </LinearLayout>
 
-        <SeekBar
-            android:id="@+id/sbVolume"
-            android:layout_width="match_parent"
-            android:layout_height="35dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"/>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp">
-            <TextView
-                android:id="@+id/tvPosition"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="0%"/>
-            <TextView
-                android:layout_width="0dp"
+            android:orientation="vertical"
+            android:background="@color/white">
+            <SeekBar
+                android:id="@+id/sbVolume"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="当前音量：50%"
-                android:gravity="center_horizontal"
-                android:layout_weight="1"/>
-            <TextView
-                android:id="@+id/tvDuration"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="100%"/>
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+                <TextView
+                    android:id="@+id/tvPosition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="0%"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="当前音量：50%"
+                    android:gravity="center_horizontal"
+                    android:layout_weight="1"/>
+                <TextView
+                    android:id="@+id/tvDuration"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="100%"/>
+            </LinearLayout>
         </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
@@ -90,10 +96,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"/>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/dividerLine"/>
         <LinearLayout
             android:id="@+id/llCountdownTime"
             android:layout_width="match_parent"
