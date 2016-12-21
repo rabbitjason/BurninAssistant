@@ -41,7 +41,7 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private List<MusicBean> musicList;// = new ArrayList<MusicBean>();
     MusicAdapter musicAdapter;
     private ListView lvMusic;
-    private TextView tvAdd;
+    private TextView tvAdd, tvReturn;
 
     public static MusicBean stMusic;
     @Override
@@ -66,6 +66,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
     private void initView() {
         tvAdd = (TextView) findViewById(R.id.tvAdd);
         tvAdd.setOnClickListener(this);
+
+        tvReturn = (TextView) findViewById(R.id.tvReturn);
+        tvReturn.setOnClickListener(this);
     }
 
     private void initMusicList() {
@@ -91,6 +94,9 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 audioPickerIntent.setType("audio/*");
                 startActivityForResult(audioPickerIntent, ADD_MUSIC);
                 break;
+            case R.id.tvReturn:
+                finish();
+                break;
             default:
                 break;
         }
@@ -114,7 +120,6 @@ public class MusicActivity extends BaseActivity implements View.OnClickListener 
                 getMP3MetaData(music);
                 musicList.add(music);
                 musicAdapter.notifyDataSetChanged();
-
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

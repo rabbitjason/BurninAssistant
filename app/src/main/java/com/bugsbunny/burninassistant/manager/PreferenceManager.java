@@ -43,7 +43,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(DURATION_KEY, duration);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getDuration() {
@@ -55,7 +55,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(INTERVAL_TIME, intervalTime);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getIntervalTime() {
@@ -67,7 +67,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(REMAINING_TIME, remainingTime);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getRemainingTime() {
@@ -79,6 +79,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(TOTAL_TIME, totalTime);
+        editor.apply();
     }
 
     public static long getTotalTime() {
@@ -90,7 +91,7 @@ public class PreferenceManager {
         SharedPreferences sharedPreferences = getSharedPreferences();
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putLong(LAST_TIME, lastTime);
-        editor.commit();
+        editor.apply();
     }
 
     public static long getLastTime() {
@@ -137,6 +138,6 @@ public class PreferenceManager {
             jsonSet.add(m.toJSONString());
         }
         editor.putStringSet(BURNIN_MUSICS, jsonSet);
-        editor.commit();
+        editor.apply();
     }
 }

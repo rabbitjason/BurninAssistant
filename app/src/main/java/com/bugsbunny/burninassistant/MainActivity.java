@@ -60,7 +60,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         planPresenter = new PlanPresenter(this);
         initView();
         planPresenter.load();
-
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
     }
@@ -90,7 +89,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         tvMusicName = (TextView) findViewById(R.id.tvMusicName);
         tvMusicDetail = (TextView) findViewById(R.id.tvMusicDetail);
     }
-
 
     @Override
     public void showDuration(int hour, int minute) {
@@ -164,21 +162,17 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     @Override
     protected void onStart() {
         super.onStart();
-
     }
 
     @Override
     protected void onStop() {
-
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
-
         planPresenter.save();
         unbindService(conn);
-
         super.onDestroy();
     }
 
@@ -201,6 +195,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
             }
         } else if (SELECTED_MUSIC_RC == requestCode) {
             showMusic(MusicActivity.stMusic);
+            musicService.setMusic(MusicActivity.stMusic);
         }
 
         super.onActivityResult(requestCode, resultCode, data);

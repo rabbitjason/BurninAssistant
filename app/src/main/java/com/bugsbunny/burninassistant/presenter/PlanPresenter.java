@@ -89,8 +89,6 @@ public class PlanPresenter {
         public void run() {
             if (remainTime > 0) {
                 remainTime -= PlanModel.SS_MS;
-                long total = planBean.getTotalTime();
-                planBean.setTotalTime(total + PlanModel.SS_MS);
                 //planView.showTotalTime(planBean.getTotalTime());
 
                 int hour = (int)(remainTime / PlanModel.HH_MS);
@@ -115,7 +113,7 @@ public class PlanPresenter {
     };
 
     public void startCountdown() {
-        remainTime = planBean.getRemainingTime();
+        remainTime = planBean.getDuration();
         isPlay = true;
         handler.postDelayed(runnable, 1000);
         if (musicService != null) {
@@ -124,11 +122,17 @@ public class PlanPresenter {
     }
 
     public void stopCountdown() {
-        planBean.setRemainingTime(remainTime);
-        isPlay = false;;
+        isPlay = false;
         handler.removeCallbacks(runnable);
         if (musicService != null) {
             musicService.playOrPause();
         }
+        planBean.setRemainingTime(remainTime);
+        planBean.setLastTime(planBean.getDuration()-remainTime);
+        long total = planBean.getTotalTime() + planBean.getLastTime();
+        planBean.setTotalTime(total);
+
+        planView.showLastTime(planBean.getLastTime());
+        planView.showTotalTime(planBean.getTotalTime());
     }
 }
