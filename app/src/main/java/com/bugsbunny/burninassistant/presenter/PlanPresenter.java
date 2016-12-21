@@ -20,6 +20,7 @@ public class PlanPresenter {
     private long remainTime = 0;
     private PlanBean planBean;
     private boolean isPlay = false;
+    private boolean isPause = false;
 
     private MusicService musicService;
 
@@ -113,13 +114,29 @@ public class PlanPresenter {
     };
 
     public void startCountdown() {
-        remainTime = planBean.getDuration();
+        if (isPause) {
+            remainTime = planBean.getRemainingTime();
+        } else {
+            remainTime = planBean.getDuration();
+            isPause = false;
+        }
         isPlay = true;
         handler.postDelayed(runnable, 1000);
         if (musicService != null) {
             musicService.playOrPause();
         }
     }
+
+    public void pauseCountdown() {
+        isPlay = false;
+        isPause = true;
+        handler.removeCallbacks(runnable);
+        if (musicService != null) {
+            musicService.playOrPause();
+        }
+        planBean.setRemainingTime(remainTime);
+    }
+
 
     public void stopCountdown() {
         isPlay = false;

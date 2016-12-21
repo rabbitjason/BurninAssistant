@@ -104,7 +104,7 @@ public class PlanActivity extends BaseActivity implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.rlPlayOrPause:
                 if (planPresenter.isPlay()) {
-                    planPresenter.stopCountdown();
+                    planPresenter.pauseCountdown();
                     ivPlayOrPause.setBackground(getResources().getDrawable(R.drawable.player_play_small));
                 } else {
                     planPresenter.startCountdown();
