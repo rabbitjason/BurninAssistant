@@ -4,24 +4,15 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.AudioManager;
-import android.net.http.SslError;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.View;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.SeekBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bugsbunny.burninassistant.bean.MusicBean;
-import com.bugsbunny.burninassistant.bean.PlanBean;
-import com.bugsbunny.burninassistant.manager.PreferenceManager;
-import com.bugsbunny.burninassistant.model.PlanModel;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
 import com.bugsbunny.burninassistant.services.MusicService;
 import com.bugsbunny.burninassistant.utils.AndroidTools;
@@ -31,10 +22,11 @@ import java.text.SimpleDateFormat;
 
 public class MainActivity extends BaseActivity implements IPlanView, View.OnClickListener {
     private View llDuration, llInterval, llMusicMore;
-    private TextView tvDurationHour,tvDurationMinute,tvIntervalMinute;
+    private TextView tvDurationHour, tvDurationMinute, tvIntervalMinute;
     private TextView tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName, tvMusicDetail;
     private PlanPresenter planPresenter;
     private Button btnPlay;
+    private ImageView ivMainMenu;
 
     private static final int SELECTED_MUSIC_RC = 100;
 
@@ -48,7 +40,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
 
-            musicService = ((MusicService.MusicBinder)service).getService();
+            musicService = ((MusicService.MusicBinder) service).getService();
             planPresenter.setMusicService(musicService);
         }
     };
@@ -65,11 +57,11 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     }
 
     private void initView() {
-        tvDurationHour = (TextView)findViewById(R.id.tvDurationHour);
-        tvDurationMinute = (TextView)findViewById(R.id.tvDurationMinute);
-        tvIntervalMinute = (TextView)findViewById(R.id.tvIntervalMinute);
+        tvDurationHour = (TextView) findViewById(R.id.tvDurationHour);
+        tvDurationMinute = (TextView) findViewById(R.id.tvDurationMinute);
+        tvIntervalMinute = (TextView) findViewById(R.id.tvIntervalMinute);
 
-        tvCountdownTime = (TextView)findViewById(R.id.tvCountdownTime);
+        tvCountdownTime = (TextView) findViewById(R.id.tvCountdownTime);
 
         tvTotalTime = (TextView) findViewById(R.id.tvTotalTime);
         tvLastTime = (TextView) findViewById(R.id.tvLastTime);
@@ -83,11 +75,14 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         llMusicMore = findViewById(R.id.llMusicMore);
         llMusicMore.setOnClickListener(this);
 
-        btnPlay = (Button)findViewById(R.id.btnPlay);
+        btnPlay = (Button) findViewById(R.id.btnPlay);
         btnPlay.setOnClickListener(this);
 
         tvMusicName = (TextView) findViewById(R.id.tvMusicName);
         tvMusicDetail = (TextView) findViewById(R.id.tvMusicDetail);
+
+        ivMainMenu = (ImageView) findViewById(R.id.ivMainMenu);
+        ivMainMenu.setOnClickListener(this);
     }
 
     @Override
@@ -154,6 +149,9 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
             case R.id.llMusicMore:
                 MusicActivity.actionStart(this, SELECTED_MUSIC_RC);
                 break;
+            case R.id.ivMainMenu:
+                openOptionsMenu();
+                break;
             default:
                 break;
         }
@@ -201,24 +199,9 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private class MyWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            super.onPageFinished(view, url);
-        }
-
-        @Override
-        public boolean shouldOverrideKeyEvent(WebView view, KeyEvent event) {
-
-            return super.shouldOverrideKeyEvent(view, event);
-        }
-
-        @Override
-        public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
-            //handler.cancel(); // Android默认的处理方式
-            //handler.proceed();  // 接受所有网站的证书
-            //handleMessage(Message msg); // 进行其他处理
-            super.onReceivedSslError(view, handler, error);
-        }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
     }
 }
