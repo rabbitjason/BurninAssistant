@@ -18,7 +18,7 @@
         android:background="@color/dividerLine" />
 
     <EditText
-        android:id="@+id/etName"
+        android:id="@+id/etVer"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:layout_margin="10dp"

@@ -2,8 +2,11 @@ package com.bugsbunny.burninassistant;
 
 import android.app.Application;
 
+import com.avos.avoscloud.AVAnalytics;
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
 import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.bean.Update;
 import com.bugsbunny.burninassistant.services.MusicService;
 
 /**
@@ -12,11 +15,14 @@ import com.bugsbunny.burninassistant.services.MusicService;
 public class ApplicationBurnin extends Application {
 
     public static ApplicationBurnin instance;
-    private static ApplicationBurnin application = null;
 
     @Override
     public void onCreate() {
         super.onCreate();
+
+        AVObject.registerSubclass(Update.class);
+
+        AVAnalytics.enableCrashReport(this, true);
 
         // 初始化参数依次为 this, AppId, AppKey
         AVOSCloud.initialize(this, "lOsbDV5wP9IDE2NekFVwWvyN-gzGzoHsz", "pzfSlIKV07xKr6t7ijp6KktG");

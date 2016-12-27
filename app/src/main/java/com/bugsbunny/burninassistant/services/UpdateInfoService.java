@@ -2,7 +2,7 @@ package com.bugsbunny.burninassistant.services;
 
 import android.content.Context;
 
-import com.bugsbunny.burninassistant.bean.UpdateInfo;
+import com.bugsbunny.burninassistant.bean.Update;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -18,7 +18,7 @@ public class UpdateInfoService {
     public UpdateInfoService(Context context) {
     }
 
-    public UpdateInfo getUpDateInfo() throws Exception {
+    public Update getUpDateInfo() throws Exception {
         String path = "/update.txt";
         StringBuffer sb = new StringBuffer();
         String line = null;
@@ -48,7 +48,7 @@ public class UpdateInfoService {
             }
         }
         String info = sb.toString();
-        UpdateInfo updateInfo = new UpdateInfo();
+        Update updateInfo = new Update();
         updateInfo.setVersion(info.split("&")[1]);
         updateInfo.setDescription(info.split("&")[2]);
         updateInfo.setUrl(info.split("&")[3]);
