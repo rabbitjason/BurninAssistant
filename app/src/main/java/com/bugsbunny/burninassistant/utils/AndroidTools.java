@@ -922,4 +922,18 @@ public class AndroidTools {
         }
 
     }
+
+
+    // 获取当前版本的版本号
+    private static String getVersion(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(
+                    context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "版本号未知";
+        }
+    }
 }

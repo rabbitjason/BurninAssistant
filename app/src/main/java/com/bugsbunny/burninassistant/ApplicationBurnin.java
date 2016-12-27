@@ -2,6 +2,7 @@ package com.bugsbunny.burninassistant;
 
 import android.app.Application;
 
+import com.avos.avoscloud.AVOSCloud;
 import com.bugsbunny.burninassistant.bean.MusicBean;
 import com.bugsbunny.burninassistant.services.MusicService;
 
@@ -16,6 +17,9 @@ public class ApplicationBurnin extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        // 初始化参数依次为 this, AppId, AppKey
+        AVOSCloud.initialize(this, "lOsbDV5wP9IDE2NekFVwWvyN-gzGzoHsz", "pzfSlIKV07xKr6t7ijp6KktG");
 
         instance = ApplicationBurnin.this;
 
