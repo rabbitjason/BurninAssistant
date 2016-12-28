@@ -17,7 +17,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVException;
 import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.bean.Update;
 import com.bugsbunny.burninassistant.manager.UploadManager;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
 import com.bugsbunny.burninassistant.services.MusicService;
@@ -35,9 +37,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
     private ImageView ivMainMenu;
 
     private static final int SELECTED_MUSIC_RC = 100;
-
     private static final int SELECTED_FILE_RC = 200;
-
 
     private MusicService musicService;
     ServiceConnection conn = new ServiceConnection() {
@@ -63,8 +63,18 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         planPresenter.load();
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
-
         UploadManager.init(this);
+        Update.getTheLastestUpdate(new Update.GetUpdateCallback() {
+            @Override
+            public void done(Update update, AVException e) {
+                if (e == null) {
+                    String desc = update.getDescription();
+                    String url = update.getUrl();
+                    String ver = update.getVersion();
+                    int i = 0;
+                }
+            }
+        });
     }
 
     private void initView() {
@@ -144,7 +154,6 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
 
     @Override
     public void onClick(View v) {
-        Intent intent;
         int hour;
         int minute;
         switch (v.getId()) {
