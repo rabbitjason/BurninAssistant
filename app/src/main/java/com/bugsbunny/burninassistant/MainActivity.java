@@ -4,8 +4,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
@@ -21,15 +24,18 @@ import com.bugsbunny.burninassistant.view.IPlanView;
 
 import java.text.SimpleDateFormat;
 
-public class MainActivity extends AppCompatActivity implements IPlanView, View.OnClickListener {
+public class MainActivity extends BaseActivity implements IPlanView, View.OnClickListener {
     private View llDuration, llInterval, llMusicMore;
     private TextView tvDurationHour, tvDurationMinute, tvIntervalMinute;
     private TextView tvCountdownTime, tvTotalTime, tvLastTime, tvMusicName, tvMusicDetail;
     private PlanPresenter planPresenter;
-    private Button btnPlay;
+    private Button btnPlay, btnUpload;
     private ImageView ivMainMenu;
 
     private static final int SELECTED_MUSIC_RC = 100;
+
+    private static final int SELECTED_FILE_RC = 200;
+
 
     private MusicService musicService;
     ServiceConnection conn = new ServiceConnection() {
@@ -84,6 +90,9 @@ public class MainActivity extends AppCompatActivity implements IPlanView, View.O
 
         ivMainMenu = (ImageView) findViewById(R.id.ivMainMenu);
         ivMainMenu.setOnClickListener(this);
+
+        btnUpload = (Button) findViewById(R.id.btnUpload);
+        btnUpload.setOnClickListener(this);
     }
 
     @Override
@@ -153,6 +162,11 @@ public class MainActivity extends AppCompatActivity implements IPlanView, View.O
             case R.id.ivMainMenu:
                 openOptionsMenu();
                 break;
+            case R.id.btnUpload:
+                Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                filePickerIntent.setType("file/*");
+                startActivityForResult(filePickerIntent, SELECTED_FILE_RC);
+                break;
             default:
                 break;
         }
@@ -195,6 +209,11 @@ public class MainActivity extends AppCompatActivity implements IPlanView, View.O
         } else if (SELECTED_MUSIC_RC == requestCode) {
             showMusic(MusicActivity.stMusic);
             musicService.setMusic(MusicActivity.stMusic);
+        } else if (SELECTED_FILE_RC == requestCode) {
+            if (RESULT_OK == resultCode) {
+                Uri uri = (Uri) data.getData();
+                String path = getRealPathFromURI(uri);
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data);
@@ -204,5 +223,26 @@ public class MainActivity extends AppCompatActivity implements IPlanView, View.O
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+
+    private String getRealPathFromURI(Uri contentUri) {
+        String res = null;
+        res = contentUri.toString();
+        //返回文件的绝对路径
+        if (res.contains("file://")) {
+            return contentUri.getPath();
+        }
+
+        String[] proj = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(contentUri, proj, null, null, null);
+        if(cursor.moveToFirst()){
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            res = cursor.getString(column_index);
+        }
+
+        cursor.close();
+
+        return res;
     }
 }

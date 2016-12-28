@@ -272,7 +272,19 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="10dp"
+            android:text="上传"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:background="@drawable/round_button_shape"/>
+
     </LinearLayout>
+
 
     <Button
         android:id="@+id/btnPlay"

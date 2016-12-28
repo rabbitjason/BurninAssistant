@@ -44,6 +44,8 @@ public class UploadManager {
             //super.handleMessage(msg);
             if (MSG_UPLOAD_FILE == msg.what) {
                 uploadingFile((String)msg.obj);
+            } else if (MSG_UPLOAD_COMPLETED == msg.what) {
+                saveUpdateInfo();
             }
         }
     }
@@ -163,4 +165,19 @@ public class UploadManager {
             e.printStackTrace();
         }
     }
+
+    private void saveUpdateInfo() {
+        update.saveEventually(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if (null == e) {
+                    Toast.makeText(mContext, "文件上传完毕", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, "文件上传失败", Toast.LENGTH_LONG).show();
+                }
+                update = null;
+            }
+        });
+    }
+
 }
