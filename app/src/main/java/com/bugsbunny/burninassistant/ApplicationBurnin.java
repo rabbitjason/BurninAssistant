@@ -7,6 +7,7 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.bugsbunny.burninassistant.bean.MusicBean;
 import com.bugsbunny.burninassistant.bean.Update;
+import com.bugsbunny.burninassistant.manager.UploadManager;
 import com.bugsbunny.burninassistant.services.MusicService;
 
 /**
@@ -30,6 +31,7 @@ public class ApplicationBurnin extends Application {
         instance = ApplicationBurnin.this;
 
         MusicService.init(this);
+
     }
 
     public static ApplicationBurnin getInstance() {

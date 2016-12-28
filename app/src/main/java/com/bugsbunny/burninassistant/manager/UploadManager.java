@@ -141,8 +141,8 @@ public class UploadManager {
     private void uploadingFile(final String filePath) {
 
         try {
-            final AVFile file = AVFile.withAbsoluteLocalPath("teamUploadVideo.mp4", filePath);
-            progressDialog.show(mContext, "", "正在上传文件(0%)");
+            final AVFile file = AVFile.withAbsoluteLocalPath("burninassis.apk", filePath);
+            progressDialog.show();
             file.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {

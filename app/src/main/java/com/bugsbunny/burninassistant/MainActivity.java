@@ -15,8 +15,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bugsbunny.burninassistant.bean.MusicBean;
+import com.bugsbunny.burninassistant.manager.UploadManager;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
 import com.bugsbunny.burninassistant.services.MusicService;
 import com.bugsbunny.burninassistant.utils.AndroidTools;
@@ -61,6 +63,8 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         planPresenter.load();
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
+
+        UploadManager.init(this);
     }
 
     private void initView() {
@@ -164,8 +168,14 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
                 break;
             case R.id.btnUpload:
                 Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                filePickerIntent.setType("file/*");
-                startActivityForResult(filePickerIntent, SELECTED_FILE_RC);
+                filePickerIntent.setType("*/*");
+                //filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                //startActivityForResult(filePickerIntent, SELECTED_FILE_RC);
+                try {
+                    startActivityForResult( Intent.createChooser(filePickerIntent, "Select a File to Upload"), SELECTED_FILE_RC);
+                } catch (android.content.ActivityNotFoundException ex) {
+                    Toast.makeText(this, "Please install a File Manager.",  Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 break;
@@ -213,6 +223,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
             if (RESULT_OK == resultCode) {
                 Uri uri = (Uri) data.getData();
                 String path = getRealPathFromURI(uri);
+                UploadManager.getSingleton().startUploadVideoFile(path);
             }
         }
 
