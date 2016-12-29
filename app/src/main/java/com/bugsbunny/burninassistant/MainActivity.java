@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.avos.avoscloud.AVException;
 import com.bugsbunny.burninassistant.bean.MusicBean;
 import com.bugsbunny.burninassistant.bean.Update;
+import com.bugsbunny.burninassistant.manager.UpdateManager;
 import com.bugsbunny.burninassistant.manager.UploadManager;
 import com.bugsbunny.burninassistant.presenter.PlanPresenter;
 import com.bugsbunny.burninassistant.services.MusicService;
@@ -64,17 +65,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
         Intent intent = new Intent(this, MusicService.class);
         bindService(intent, conn, Context.BIND_AUTO_CREATE);
         UploadManager.init(this);
-        Update.getTheLastestUpdate(new Update.GetUpdateCallback() {
-            @Override
-            public void done(Update update, AVException e) {
-                if (e == null) {
-                    String desc = update.getDescription();
-                    String url = update.getUrl();
-                    String ver = update.getVersion();
-                    int i = 0;
-                }
-            }
-        });
+        UpdateManager.init(this);
     }
 
     private void initView() {
@@ -178,7 +169,7 @@ public class MainActivity extends BaseActivity implements IPlanView, View.OnClic
             case R.id.btnUpload:
                 Intent filePickerIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 filePickerIntent.setType("*/*");
-                //filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
+                filePickerIntent.addCategory(Intent.CATEGORY_OPENABLE);
                 //startActivityForResult(filePickerIntent, SELECTED_FILE_RC);
                 try {
                     startActivityForResult( Intent.createChooser(filePickerIntent, "Select a File to Upload"), SELECTED_FILE_RC);
